@@ -1,182 +1,32 @@
-import React from 'react';
-
-var dimension = 5;
-
-class App extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      pick: new Array(dimension * dimension).fill(0),
-      picked: [],
-      result: [],
-      nxtNum: 1,
-      hits: null,
-      hit_pool: this.generateNums(dimension * dimension),
-      hit_step: 0,
-      dimension: dimension
-    };
-    
-    this.handleClick = this.handleClick.bind(this);
-    this.handleClear = this.handleClear.bind(this);
-    this.handleGo = this.handleGo.bind(this);
-    this.handleAdd = this.handleAdd.bind(this);
-  }
-  render(){
-    const results = this.state.picked.map((p) => <Board nums={p} hits={this.state.hits} hit_lines={this.checkLine(p)}/>);
-                                        
-    return (
-      <div>
-        <h1>Bingo</h1>
-        <button onClick={() => this.handleRandom()}>random</button>
-        <button onClick={() => this.handleClear()}>Clear</button>
-        <button onClick={() => this.handleAdd()}>Add</button>  
-        <h1> Pick Numbers, next: {this.state.nxtNum}</h1>
-        <Board nums={this.state.pick} handle={this.handleClick}/>   
-        <br/>
-        <button onClick={() => this.handleGo()}>go</button>
-        <h1> Result {(this.state.hits)? this.state.hits.toString() : ''}</h1> 
-        {results}
-      </div>
-    );
-  }
-  
-  handleClick(i){
-    if(this.state.pick[i] == 0){
-      let newNums = this.state.pick.slice(0);
-      newNums[i] = this.state.nxtNum;
-      this.setState({
-        pick: newNums,
-        nxtNum: this.state.nxtNum+1
-      });
-    }
-  }
-  
-  handleGo(){
-    const hit_pool = this.state.hit_pool;
-    const hits = hit_pool.slice(0, this.state.hit_step+1);
-    this.setState({
-      hits: hits,
-      hit_step: this.state.hit_step+1
-    });
-  }
-  
-  handleRandom(){
-      const ranNums = this.generateNums(dimension * dimension);
-      this.setState({
-        pick: ranNums,
-        result: ranNums,
-      });
-  }
-  
-  handleClear(){
-      this.setState({
-      pick: new Array(dimension * dimension).fill(0),
-      picked: [],
-      result: [],
-      nxtNum: 1,
-      hits: null,
-      hit_pool: this.generateNums(dimension * dimension),
-      hit_step: 0
-      });
-  }
-  
-  handleAdd(){
-    const pick = this.state.pick;
-    let picked = this.state.picked;
-    picked.push(pick)
-    this.setState({
-      picked: picked,
-      pick: new Array(dimension * dimension).fill(0),
-      nxtNum: 1,
-    });
-  }
-  
-  generateNums(max){
-    //   const pool = Array.apply(null, Array(max+1)).map(function (_, i) {return i;});
-      const pool = [
-          "(child noises in the background)", 
-          "Hello, hello?", 
-          "i need to jump in another call", 
-          "can everyone go on mute", 
-          "could you please get closer to the mic",
-
-          "(load paintful echo / feedback)", 
-          "next slide, please", 
-          "can we take this offline?",
-          "is __ on the call?",
-          "Could you share this slides afterwards?",
-
-          "can somebody grant presenter rights?",
-          "can you email that to everyone?",
-          "can you set the next meeting?",
-          "sorry, I had problems loging in",
-          "(animal noises in the backgroud)",
-
-          "sorry, i didn't found the conference id",
-          "i was having connection issues",
-          "i'll have to get back to you",
-          "who just joined?",
-          "sorry, something __ with my calendar",
-          
-          "do you see my screen",
-          "let wait for __ !",
-          "you will send the minutes?",
-          "sorry, i was on mute.",
-          "can you repeat, please?"
-      ];
+import React, { useEffect, useState } from 'react';
+global.dimension = 5
 
 
-      console.log(`pool in generateNums`, pool)
-      let arr = [];
-      while(arr.length < max){
-        const idx = parseInt(Math.random() * (max+1));
-        if(pool[idx] != 0){
-          arr.push(pool[idx]);
-          pool[idx] = 0;
-        }
-      }
-      console.log(`arr in generateNums`, arr)
-      return arr;
-  }
-  
-  checkLine(arr){
-    const lines = [
-//       [0,1,2,3,4],
-//       [5,6,7,8,9],
-//       [10,11,12,13,14],
-//       [15,16,17,18,19],
-//       [20,21,22,23,24],
-      
-//       [0,5,10,15,20],
-//       [1,6,11,16,21],
-//       [2,7,12,17,22],
-//       [3,8,13,18,23],
-//       [4,9,14,19,24],
-      
-      // [0,6,12,18,24],
-      // [4,8,12,16,20]
-    ];
+const checkLine = (arr,hitsInput)=>{
+    const lines = [];
     
     let slash1 = [];
     let slash2 = [];
-    for(var i = 0; i < dimension; i++){
+    for(var i = 0; i < global.dimension; i++){
       let row = [];
       let col = [];
       
-      for(var o = 0; o < dimension; o++){
-        row.push(o + dimension * i);
-        col.push(o * dimension + i);
+      for(var o = 0; o < global.dimension; o++){
+        row.push(o + global.dimension * i);
+        col.push(o * global.dimension + i);
       }
       lines.push(row);
       lines.push(col);
       
-      slash1.push(i + dimension * i);
-      slash2.push((dimension - 1) * (i + 1));
+      slash1.push(i + global.dimension * i);
+      slash2.push((global.dimension - 1) * (i + 1));
     }
     lines.push(slash1);
     lines.push(slash2);
+  
+    console.log(`lines >>`, lines)
     
-    const hits = this.state.hits || [];
+    const hits = hitsInput || [];
     let rtn = [];
     for(var i = 0; i < lines.length; i++){
       let line_is_hit = true;
@@ -196,62 +46,188 @@ class App extends React.Component{
     }
     return rtn;
   }
+
+const generateNums = (max)=>{
+    const pool = [
+        "(child noises in the background)", 
+        "Hello, hello?", 
+        "i need to jump in another call", 
+        "can everyone go on mute", 
+        "could you please get closer to the mic",
+        "(load paintful echo / feedback)", 
+        "next slide, please", 
+        "can we take this offline?",
+        "is __ on the call?",
+        "Could you share this slides afterwards?",
+        "can somebody grant presenter rights?",
+        "can you email that to everyone?",
+        "can you set the next meeting?",
+        "sorry, I had problems loging in",
+        "(animal noises in the backgroud)",
+        "sorry, i didn't found the conference id",
+        "i was having connection issues",
+        "i'll have to get back to you",
+        "who just joined?",
+        "sorry, something __ with my calendar",
+        "do you see my screen",
+        "let wait for __ !",
+        "you will send the minutes?",
+        "sorry, i was on mute.",
+        "can you repeat, please?",
+        "can you speak loader?"
+    ];
+
+
+    let arr = [];
+    while(arr.length < max){
+      const idx = parseInt(Math.random() * (max+1));
+      if(pool[idx] !== 0){
+        arr.push(pool[idx]);
+        pool[idx] = 0;
+      }
+    }
+    console.log(`arr in generateNums`, arr)
+    return arr;
 }
 
-export default App;
+
+export default function App (){
+    const [dimension, setDimension] = useState(5)
+    const [pick, setPick] = useState(new Array(global.dimension * global.dimension).fill(0))
+    const [picked, setPicked] = useState([])
+    const [result, setResult] = useState([])
+    const [nxtNum, setNxtNum] = useState(1)
+    const [hits, setHits] = useState(null)
+    const [hit_pool, setHit_pool] = useState(generateNums(global.dimension * global.dimension))
+    const [hit_step, setHit_step] = useState(0)
+
+    useEffect(()=>{
+    },[hits])
+    const results = picked.map((p) => <Board nums={p} hits={hits} hit_lines={checkLine(p,hits)}/>);
+
+
+    const handleRandom = ()=>{
+        const ranNums = generateNums(global.dimension * global.dimension);
+        console.log(`ranNums`, ranNums)
+        
+        setPick(ranNums)
+        setResult(ranNums)
+    }
+
+    const handleClear = ()=>{
+        setNxtNum(1)
+        setPick(new Array(global.dimension * global.dimension).fill(0))
+        setResult([])
+        setPicked([])
+        setHits(null)
+        setHit_pool(generateNums(global.dimension * global.dimension))
+        setHit_step(0)
+    }
+    
+    const handleAdd = ()=>{
+    //   const pick = this.state.pick;
+    //   let picked = this.state.picked;
+    
+    if(picked.length === 0 )picked.push(pick)
+
+      console.log(`picked.length  >>`, picked)
+      console.log(`picked.length  >>`, picked.length )
+      setPicked(picked)
+      setPick(new Array(global.dimension * global.dimension).fill(0))
+      setNxtNum(1)
+    }
+
+
+
+
+  const handleClick = (i)=>{
+    if(this.state.pick[i] === 0){
+      let newNums = this.state.pick.slice(0);
+      newNums[i] = nxtNum;
+      setPick(newNums)
+      setNxtNum(nxtNum+1)
+    }
+  }
+  
+const handleGo = (hit_poolInput,hit_stepInput) => {
+    const hit_pool = hit_poolInput;
+    const hits = hit_pool.slice(0, hit_stepInput+1);
+    setHits(hits)
+    setHit_step(hit_stepInput+1)
+  }
+
+  return (
+    <div>
+      <h1>Bingo</h1>
+      <button onClick={() => handleRandom()}>random</button>
+      <button onClick={() => handleClear()}>Clear</button>
+      <button onClick={() => handleAdd()}>Add</button>  
+      <h1> Pick Numbers, next: {nxtNum}</h1>
+      {/* <Board nums={this.state.pick} handle={this.handleClick}/>    */}
+      <br/>
+      <button onClick={() => handleGo(hit_pool,hit_step)}>go</button>
+      <h1> Result {(hits)? hits.toString() : ''}</h1> 
+      {results}
+    </div>
+  );
+}
+
 
 
 class Board extends React.Component{
-  constructor(props){
-    super(props);
-    console.log(`props in Board >>`, props)
-  }
-  
-  render(){
-    const num_tiles = this.props.nums.map((n, i) => 
-      <Btn 
-        // active={ ((this.props.hits || []).includes(n)) } 
-        // lined={ ((this.props.hit_lines || []).includes(i)) }
-        idx={i} num={n} 
-        handle={this.props.handle}
-      />
-    );
-
-    console.log(`num_tiles`, num_tiles)
-    return(
-      <div style={{width: 107 * dimension, height: 107 * dimension}} className="group">
-        {num_tiles}
-      </div>
-    );
-  }
-  
-}
-
-class Btn extends React.Component{
-  constructor(props){
-    super(props);
+    constructor(props){
+      super(props);
+      console.log(`this.props.nums in Board >>`, this.props.nums)
+    }
     
-    if(undefined != this.props.handle)
-      this.handleClick = this.props.handle.bind(this);
-    else
-      this.handleClick = () => {};
-  }
-  render(){
-    let status = '';
-    if(this.props.active == true){
-      status = 'active';
+    render(){
+      const num_tiles = this.props.nums.map((n, i) => 
+        <Btn 
+          active={ ((this.props.hits || []).includes(n)) } 
+          lined={ ((this.props.hit_lines || []).includes(i)) }
+          idx={i} num={n} 
+          handle={this.props.handle}
+        />
+      );
+  
+      console.log(`num_tiles`, num_tiles)
+      return(
+        <div style={{width: 107 * global.dimension, height: 107 * global.dimension}} className="group">
+          {num_tiles}
+        </div>
+      );
     }
-    if(this.props.lined == true){
-      status = 'lined';
-    }
-    return(
-      <div className={"btn " + status} 
-        onClick={(e) => this.handleClick(this.props.idx)}
-      >
-        {(this.props.num != 0) ? this.props.num : <span className="black">&nbsp;</span>}
-      </div>
-    );
+    
   }
-}
-
+  
+  class Btn extends React.Component{
+    constructor(props){
+      super(props);
+      
+      if(undefined != this.props.handle)
+        this.handleClick = this.props.handle.bind(this);
+      else
+        this.handleClick = () => {};
+  
+    }
+    render(){
+      let status = '';
+      if(this.props.active == true){
+        status = 'active';
+      }
+      if(this.props.lined == true){
+        status = 'lined';
+      }
+      return(
+          this.props.idx !== 12 ? 
+            <div className={"btn " + status} onClick={(e) => this.handleClick(this.props.idx)}>
+            {(this.props.num != 0) ? this.props.num : <span className="black">&nbsp;</span>}
+          </div> : 
+          <div className={"btn " + status} onClick={(e) => this.handleClick(this.props.idx)}>
+            <span className="black">Bingo</span>
+          </div>
+      );
+    }
+  }
+  
 
