@@ -12,4 +12,4 @@ Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 
-###first click Random Button and then click Add button to create bingo puzzle and then with Go button play the game
+### first click Random Button and then click Add button to create bingo puzzle and then with Go button play the game
