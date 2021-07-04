@@ -27,17 +27,17 @@ const checkLine = (arr,hitsInput)=>{
     
     const hits = hitsInput || [];
     let rtn = [];
-    for(var i = 0; i < lines.length; i++){
+    for(let i = 0; i < lines.length; i++){
       let line_is_hit = true;
       for(var num in lines[i]){
-        if(undefined == arr[lines[i][num]] || !hits.includes(arr[lines[i][num]])){
+        if(undefined === arr[lines[i][num]] || !hits.includes(arr[lines[i][num]])){
           line_is_hit = false;
           break;
         }
       }
       
       if(line_is_hit){
-        for(var num in lines[i]){
+        for(let num in lines[i]){
           rtn.push(lines[i][num]);
         }
       }
@@ -90,7 +90,6 @@ const generateNums = (max)=>{
 
 
 export default function App (){
-    const [dimension, setDimension] = useState(5)
     const [pick, setPick] = useState(new Array(global.dimension * global.dimension).fill(0))
     const [picked, setPicked] = useState([])
     const [result, setResult] = useState([])
@@ -193,7 +192,7 @@ class Board extends React.Component{
     constructor(props){
       super(props);
       
-      if(undefined != this.props.handle)
+      if(undefined !== this.props.handle)
         this.handleClick = this.props.handle.bind(this);
       else
         this.handleClick = () => {};
@@ -201,16 +200,16 @@ class Board extends React.Component{
     }
     render(){
       let status = '';
-      if(this.props.active == true){
+      if(this.props.active === true){
         status = 'active';
       }
-      if(this.props.lined == true){
+      if(this.props.lined === true){
         status = 'lined';
       }
       return(
           this.props.idx !== 12 ? 
             <div className={"btn " + status} onClick={(e) => this.handleClick(this.props.idx)}>
-            {(this.props.num != 0) ? this.props.num : <span className="black">&nbsp;</span>}
+            {(this.props.num !== 0) ? this.props.num : <span className="black">&nbsp;</span>}
           </div> : 
           <div className={"btn " + status} onClick={(e) => this.handleClick(this.props.idx)}>
             <span className="black">Bingo</span>
