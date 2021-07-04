@@ -92,7 +92,6 @@ const generateNums = (max)=>{
 export default function App (){
     const [pick, setPick] = useState(new Array(global.dimension * global.dimension).fill(0))
     const [picked, setPicked] = useState([])
-    const [result, setResult] = useState([])
     const [nxtNum, setNxtNum] = useState(1)
     const [hits, setHits] = useState(null)
     const [hit_pool, setHit_pool] = useState(generateNums(global.dimension * global.dimension))
@@ -107,13 +106,11 @@ export default function App (){
         const ranNums = generateNums(global.dimension * global.dimension);
         
         setPick(ranNums)
-        setResult(ranNums)
     }
 
     const handleClear = ()=>{
         setNxtNum(1)
         setPick(new Array(global.dimension * global.dimension).fill(0))
-        setResult([])
         setPicked([])
         setHits(null)
         setHit_pool(generateNums(global.dimension * global.dimension))
@@ -128,17 +125,6 @@ export default function App (){
       setNxtNum(1)
     }
 
-
-
-
-  const handleClick = (i)=>{
-    if(this.state.pick[i] === 0){
-      let newNums = this.state.pick.slice(0);
-      newNums[i] = nxtNum;
-      setPick(newNums)
-      setNxtNum(nxtNum+1)
-    }
-  }
   
 const handleGo = (hit_poolInput,hit_stepInput) => {
     const hit_pool = hit_poolInput;
@@ -165,9 +151,6 @@ const handleGo = (hit_poolInput,hit_stepInput) => {
 
 
 class Board extends React.Component{
-    constructor(props){
-      super(props);
-    }
     
     render(){
       const num_tiles = this.props.nums.map((n, i) => 
