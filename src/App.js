@@ -24,7 +24,6 @@ const checkLine = (arr,hitsInput)=>{
     lines.push(slash1);
     lines.push(slash2);
   
-    console.log(`lines >>`, lines)
     
     const hits = hitsInput || [];
     let rtn = [];
@@ -86,7 +85,6 @@ const generateNums = (max)=>{
         pool[idx] = 0;
       }
     }
-    console.log(`arr in generateNums`, arr)
     return arr;
 }
 
@@ -108,7 +106,6 @@ export default function App (){
 
     const handleRandom = ()=>{
         const ranNums = generateNums(global.dimension * global.dimension);
-        console.log(`ranNums`, ranNums)
         
         setPick(ranNums)
         setResult(ranNums)
@@ -124,14 +121,9 @@ export default function App (){
         setHit_step(0)
     }
     
-    const handleAdd = ()=>{
-    //   const pick = this.state.pick;
-    //   let picked = this.state.picked;
-    
+    const handleAdd = ()=>{    
     if(picked.length === 0 )picked.push(pick)
 
-      console.log(`picked.length  >>`, picked)
-      console.log(`picked.length  >>`, picked.length )
       setPicked(picked)
       setPick(new Array(global.dimension * global.dimension).fill(0))
       setNxtNum(1)
@@ -163,7 +155,6 @@ const handleGo = (hit_poolInput,hit_stepInput) => {
       <button onClick={() => handleClear()}>Clear</button>
       <button onClick={() => handleAdd()}>Add</button>  
       <h1> Pick Numbers, next: {nxtNum}</h1>
-      {/* <Board nums={this.state.pick} handle={this.handleClick}/>    */}
       <br/>
       <button onClick={() => handleGo(hit_pool,hit_step)}>go</button>
       <h1> Result {(hits)? hits.toString() : ''}</h1> 
@@ -177,7 +168,6 @@ const handleGo = (hit_poolInput,hit_stepInput) => {
 class Board extends React.Component{
     constructor(props){
       super(props);
-      console.log(`this.props.nums in Board >>`, this.props.nums)
     }
     
     render(){
@@ -190,7 +180,6 @@ class Board extends React.Component{
         />
       );
   
-      console.log(`num_tiles`, num_tiles)
       return(
         <div style={{width: 107 * global.dimension, height: 107 * global.dimension}} className="group">
           {num_tiles}
